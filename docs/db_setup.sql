@@ -1,15 +1,12 @@
--- 1. 創建資料庫
-CREATE DATABASE restaurant_db;
-\c restaurant_db;
-
--- 2. 創建表格 [Category]
+-- 創建資料庫動作由 Docker Compose 執行
+-- 1. 創建表格 [Category]
 CREATE TABLE Category (
     id SERIAL PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL,
     description VARCHAR(50) NULL
 );
 
--- 3. 創建表格 [Restaurant]
+-- 2. 創建表格 [Restaurant]
 CREATE TABLE Restaurant (
     id SERIAL PRIMARY KEY,
     restaurant_name VARCHAR(50) NOT NULL,
@@ -17,7 +14,7 @@ CREATE TABLE Restaurant (
     FOREIGN KEY (category_id) REFERENCES Category(id)
 );
 
--- 4. 插入 Category 資料
+-- 3. 插入 Category 資料
 INSERT INTO Category (category_name, description) VALUES
     ('Breakfast', '早午餐'),
     ('Japanese', '日式'),
@@ -27,7 +24,7 @@ INSERT INTO Category (category_name, description) VALUES
     ('Hamburger', '漢堡'),
     ('Delivery', '外送');
 
--- 5. 插入 Restaurant 資料
+-- 4. 插入 Restaurant 資料
 INSERT INTO Restaurant (restaurant_name, category_id) VALUES
     ('麥味登', 1),
     ('檸檬草', 1),
