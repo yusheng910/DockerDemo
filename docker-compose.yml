@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # DotNet 應用程式服務
+  dotnet_app:
+    build:
+      context: ./demo-web-api # 指定 Dockerfile 的路徑
+      dockerfile: Dockerfile # 指定 Dockerfile 的名稱
+    container_name: dotnetapp-mx
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development # 設定 ASP.NET Core 環境變數
+    ports:
+      - "127.0.0.1:8080:8080" # 將容器的 8080 埠映射到主機的 8080 埠，並綁定到 localhost
+    volumes:
+      # 掛載 appsettings.json 和 appsettings.Development.json
+      - ./demo-web-api/appsettings.json:/app/appsettings.json:ro
+      - ./demo-web-api/appsettings.Development.json:/app/appsettings.Development.json:ro
+    networks:
+      - mx-network # 連接到 mx-network
+
+  # Nginx 反向代理服務
+  nginx:
+    image: nginx:latest
+    container_name: nginx-mx
+    ports:
+      - "80:80" # 將容器的 80 埠映射到主機的 80 埠，用於外部訪問
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro # 掛載 Nginx 設定檔，只讀
+    networks:
+      - mx-network # 連接到 mx-network
+    depends_on:
+      - dotnet_app # 確保 dotnet_app 服務啟動後才啟動 Nginx
+
+networks:
+  # 定義一個橋接網路，讓所有服務可以互相通訊
+  mx-network:
+    driver: bridge

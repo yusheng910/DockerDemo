@@ -1,0 +1,22 @@
+services:
+  db-service:
+    image: postgres:16
+    container_name: postgres-mx
+    environment:
+      POSTGRES_USER: yushc
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: demo-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db_setup.sql:/docker-entrypoint-initdb.d/init.sql
+      - db-data-volumes:/var/lib/postgresql/data
+    networks:
+      - dockerdemo_mx-network # 指定使用既有的網路
+
+volumes:
+  db-data-volumes:
+
+networks:
+  dockerdemo_mx-network:
+    external: true # 這個網路已經存在，不要自動建立
